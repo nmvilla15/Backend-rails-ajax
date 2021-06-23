@@ -2,14 +2,26 @@ function handle_ajax(event) {
   console.log('DOM fully loaded and parsed');
   const resultsDiv = document.getElementById('results-div');
   const restOpsDiv = document.getElementById('rest-ops');
+
   const listUsersButton = document.getElementById('list-users');
+  //create user
   const createUserButton = document.getElementById('create-user');
   const userName = document.getElementById('user-username');
   const userPassword = document.getElementById('user-password');
+  //update user
   const updateUserButton = document.getElementById('update-user')
   const userID = document.getElementById('user-id')
   const userName1 = document.getElementById('user-username1')
   const userPassword1 = document.getElementById('user-password1')
+  //delete user
+  const deleteUserButton = document.getElementById('delete-user');
+  const userID1 = document.getElementById('user-id1');
+  //list facts
+  const listFactsButton = document.getElementById('list-facts');
+  
+
+
+  //users path
   const users_path = 'http://localhost:3001/api/v1/users'
 
   restOpsDiv.addEventListener('click', (event) => {
@@ -91,6 +103,31 @@ function handle_ajax(event) {
           });
         }
       });
+    } else if (event.target === deleteUserButton) {
+      fetch(`${users_path}/${userID1.value}`,
+        { method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      ).then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            resultsDiv.innerHTML = '';
+            let parag = document.createElement('P');
+            parag.textContent = JSON.stringify(data);
+            resultsDiv.appendChild(parag);
+          });
+        } else {
+          response.json().then((data) => {
+            alert(`Return code ${response.status} ${response.statusText} ${JSON.stringify(data)}`);
+          }).catch((error) => {
+            console.log(error);
+            alert(error);
+          });
+        }
+      });
     }
-  });
-}
+
+
+
+  }); //closes restopsdiv
+} //closes function
